@@ -1,0 +1,28 @@
+# Linting
+black
+pre-commit
+
+# Backend
+flask
+
+# Pre-proccessing & Linear Algerbra & Tokenizing
+pandas
+numpy
+nltk
+
+# Training
+torch
+transformers
+tensorflow
+keras
+
+# Visualizing
+matplotlib
+seaborn
+scikit-learn
+wordcloud
+
+#
+graphviz
+pydotplus
+pydot
