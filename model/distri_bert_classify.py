@@ -1,4 +1,5 @@
 import numpy as np
+from keras.models import load_model
 
 from keras.models import Model
 from transformers import TFDistilBertForSequenceClassification, AutoTokenizer
@@ -6,21 +7,31 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 
 class DistriBertClassify:
-    def __init__(self, name, from_pt=True):
-        self.tokenizer = AutoTokenizer.from_pretrained(name)
-        self.bert_model = TFDistilBertForSequenceClassification.from_pretrained(
-            name, from_pt=from_pt
-        )
-        self.callbacks = []
-
-    def update_data_frame(
-        self, df_train, df_test, max_length, input_ids_key, attention_mask_key
+    def __init__(
+        self,
+        name,
+        from_pt=True,
+        model_path=None,
+        max_length=None,
+        input_ids_key=None,
+        attention_mask_key=None,
     ):
-        self.df_train = df_train
-        self.df_test = df_test
+        self.tokenizer = AutoTokenizer.from_pretrained(name)
+
+        if model_path:
+            self.bert_model = load_model(model_path)
+        else:
+            self.bert_model = TFDistilBertForSequenceClassification.from_pretrained(
+                name, from_pt=from_pt
+            )
+
         self.max_length = max_length
         self.input_ids_key = input_ids_key
         self.attention_mask_key = attention_mask_key
+
+    def update_data_frame(self, df_train, df_test):
+        self.df_train = df_train
+        self.df_test = df_test
 
     def compile(self, inputs, outputs, optimizer, loss, metrics):
         self.bert_model = Model(inputs=inputs, outputs=outputs)
@@ -79,7 +90,6 @@ class DistriBertClassify:
 
         test_predictions = self.bert_model.predict(validation_data)
         test_predictions = np.argmax(test_predictions, axis=1)
-        print(test_predictions)
 
         print("Confusion Matrix:")
         print(confusion_matrix(self.df_test.y, test_predictions))
