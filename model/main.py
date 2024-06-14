@@ -1,5 +1,3 @@
-import pandas as pd
-
 import tensorflow as tf
 
 from keras.layers import Dense, Dropout, Input, Flatten, BatchNormalization
@@ -10,16 +8,16 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 from sklearn.model_selection import train_test_split
 
-from data_frame import DataFrame
-from distri_bert_classify import DistriBertClassify
-from text_preprocessor import TextPreprocessor
+from model.data_frame import DataFrame
+from model.distri_bert_classify import DistriBertClassify
+from model.text_preprocessor import TextPreprocessor
 
 max_length = 300
 input_ids_key = "input_ids"
 attention_mask_key = "attention_mask"
 
-def train():
-    df = DataFrame("./dataset.csv", "Resume", "Category")
+def train() -> tuple[float, float]:
+    df = DataFrame("./model/dataset.csv", "Resume", "Category")
     df.preprocess()
 
     df_train, df_test = train_test_split(
@@ -63,7 +61,7 @@ def train():
         metrics=SparseCategoricalAccuracy("balanced_accuracy"),
     )
 
-    model.train(
+    loss, acc = model.train(
         [
             EarlyStopping(
                 monitor="val_balanced_accuracy",
@@ -82,25 +80,25 @@ def train():
         ]
     )
 
+    return loss, acc
 
-def load():
-    from tika import parser
+
+def load(content):
+    # from tika import parser
+    # content = str(parser.from_file("./resume.pdf")["content"])
     
     text_preprocessor = TextPreprocessor()
-    data_frame = DataFrame("./dataset.csv", "Resume", "Category")
-    text = str(parser.from_file("./resume.pdf")["content"])
+    data_frame = DataFrame("./model/dataset.csv", "Resume", "Category")
 
     for func in text_preprocessor:
-        text = func(text)
+        content = func(content)
 
     model = DistriBertClassify(
         "manishiitg/distilbert-resume-parts-classify",
-        model_path="resume_parser.h5",
+        model_path="./model/resume_parser.h5",
         max_length=300,
         input_ids_key="input_ids",
         attention_mask_key="attention_mask",
     )
-    res = model.predict([text])
-    print(data_frame.labels(res))
-
-load()
+    res = model.predict([content])
+    return data_frame.labels(res[0])

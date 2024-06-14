@@ -39,7 +39,7 @@ class DistriBertClassify:
 
         self.bert_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
-    def train(self, callbacks):
+    def train(self, callbacks) -> tuple[float, float]:
         x_train = self.tokenizer(
             text=self.df_train.x.tolist(),
             max_length=self.max_length,
@@ -97,7 +97,7 @@ class DistriBertClassify:
         print("Classification Report:")
         print(classification_report(self.df_test.y, test_predictions))
 
-        self.bert_model.save("resume_parser.h5")
+        return loss, acc
 
     def predict(self, text):
         x = self.tokenizer(

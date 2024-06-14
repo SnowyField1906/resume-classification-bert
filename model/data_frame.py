@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from text_preprocessor import TextPreprocessor
+from model.text_preprocessor import TextPreprocessor
 
 
 class DataFrame:
@@ -27,17 +27,12 @@ class DataFrame:
         for func in text_preprocessor:
             self.data.x = self.data.x.apply(func=func)
 
-    def labels(self, output: list[list[int]]) -> list[str]:
-        """
-        mapping label and percentage and sorting them
-        """
+    def labels(self, output: list[int]) -> list[(str, str)]:
         labels = []
         keys = list(self.labels_dict.keys())
 
-        for dist in output:
-            for idx, val in enumerate(dist):
-                labels.append((keys[idx], val))
-
+        for idx, val in enumerate(output):
+            labels.append([keys[idx], str(round(val * 100, 2))])
 
         labels = sorted(labels, key=lambda x: x[1], reverse=True)
 
