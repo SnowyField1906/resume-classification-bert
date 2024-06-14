@@ -27,13 +27,11 @@ class DataFrame:
         for func in text_preprocessor:
             self.data.x = self.data.x.apply(func=func)
 
-    def labels(self, output: list[int]) -> list[(str, str)]:
-        labels = []
+    def labels(self, output: list[int]) -> dict[str, str]:
+        labels = {}
         keys = list(self.labels_dict.keys())
 
         for idx, val in enumerate(output):
-            labels.append([keys[idx], str(round(val * 100, 2))])
-
-        labels = sorted(labels, key=lambda x: x[1], reverse=True)
+            labels[keys[idx]] = str(round(val * 100, 2))
 
         return labels

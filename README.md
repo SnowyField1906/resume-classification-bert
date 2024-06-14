@@ -24,7 +24,7 @@ python app.py
 - default port: 5000
 - api endpoint:
   - `POST /train` - `{loss: string, acc: string}`: train the model
-  - `GET /process?content={string}` - `[string, string][]`: read content from PDF file and return the classification result
+  - `GET /process?content={string}` - `{[role: string]: string}`: read content from PDF file and return the classification result
 
 ## Linting and formatting
 
