@@ -19,7 +19,7 @@ df_train, df_test = train_test_split(
     df.data, test_size=0.3, shuffle=True, random_state=101
 )
 
-max_length = 200
+max_length = 300
 input_ids_key = "input_ids"
 attention_mask_key = "attention_mask"
 
