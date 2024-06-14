@@ -63,8 +63,6 @@ class DistriBertClassify:
             verbose=1,
         )
 
-        print(self.df_test.x.tolist()[:5])
-
         train_data = {
             self.input_ids_key: x_train[self.input_ids_key],
             self.attention_mask_key: x_train[self.attention_mask_key],
@@ -91,6 +89,7 @@ class DistriBertClassify:
         print("Test Balanced Categorical Accuracy:", acc)
 
         test_predictions = self.bert_model.predict(validation_data)
+        print(test_predictions)
         test_predictions = np.argmax(test_predictions, axis=1)
 
         print("Confusion Matrix:")

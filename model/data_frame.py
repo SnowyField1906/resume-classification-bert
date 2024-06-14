@@ -14,15 +14,31 @@ class DataFrame:
         labels_dict = {}
         for idx, label in enumerate(data.y.unique()):
             labels_dict[label] = idx
-        labels_dict
 
         data.y = data.y.apply(func=lambda x: labels_dict[x])
         data.y = data.y.astype(np.int64)
 
         self.data = data
+        self.labels_dict = labels_dict
 
     def preprocess(self):
         text_preprocessor = TextPreprocessor()
 
         for func in text_preprocessor:
             self.data.x = self.data.x.apply(func=func)
+
+    def labels(self, output: list[list[int]]) -> list[str]:
+        """
+        mapping label and percentage and sorting them
+        """
+        labels = []
+        keys = list(self.labels_dict.keys())
+
+        for dist in output:
+            for idx, val in enumerate(dist):
+                labels.append((keys[idx], val))
+
+
+        labels = sorted(labels, key=lambda x: x[1], reverse=True)
+
+        return labels

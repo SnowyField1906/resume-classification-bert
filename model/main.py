@@ -1,3 +1,5 @@
+import pandas as pd
+
 import tensorflow as tf
 
 from keras.layers import Dense, Dropout, Input, Flatten, BatchNormalization
@@ -10,7 +12,11 @@ from sklearn.model_selection import train_test_split
 
 from data_frame import DataFrame
 from distri_bert_classify import DistriBertClassify
+from text_preprocessor import TextPreprocessor
 
+max_length = 300
+input_ids_key = "input_ids"
+attention_mask_key = "attention_mask"
 
 def train():
     df = DataFrame("./dataset.csv", "Resume", "Category")
@@ -19,10 +25,6 @@ def train():
     df_train, df_test = train_test_split(
         df.data, test_size=0.3, shuffle=True, random_state=101
     )
-
-    max_length = 300
-    input_ids_key = "input_ids"
-    attention_mask_key = "attention_mask"
 
     model = DistriBertClassify(
         "manishiitg/distilbert-resume-parts-classify",
@@ -82,12 +84,23 @@ def train():
 
 
 def load():
+    from tika import parser
+    
+    text_preprocessor = TextPreprocessor()
+    data_frame = DataFrame("./dataset.csv", "Resume", "Category")
+    text = str(parser.from_file("./resume.pdf")["content"])
+
+    for func in text_preprocessor:
+        text = func(text)
+
     model = DistriBertClassify(
         "manishiitg/distilbert-resume-parts-classify",
         model_path="resume_parser.h5",
         max_length=300,
+        input_ids_key="input_ids",
+        attention_mask_key="attention_mask",
     )
-
-    model.predict(["I am a software engineer", "I am a data scientist"])
+    res = model.predict([text])
+    print(data_frame.labels(res))
 
 load()
