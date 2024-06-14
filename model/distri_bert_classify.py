@@ -63,6 +63,8 @@ class DistriBertClassify:
             verbose=1,
         )
 
+        print(self.df_test.x.tolist()[:5])
+
         train_data = {
             self.input_ids_key: x_train[self.input_ids_key],
             self.attention_mask_key: x_train[self.attention_mask_key],
@@ -95,6 +97,8 @@ class DistriBertClassify:
         print(confusion_matrix(self.df_test.y, test_predictions))
         print("Classification Report:")
         print(classification_report(self.df_test.y, test_predictions))
+
+        self.bert_model.save("resume_parser.h5")
 
     def predict(self, text):
         x = self.tokenizer(

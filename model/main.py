@@ -88,4 +88,6 @@ def load():
         max_length=300,
     )
 
+    model.predict(["I am a software engineer", "I am a data scientist"])
+
 load()
