@@ -9,7 +9,7 @@
 
 ```bash
 # Create new Conda environment (optional)
-conda create -n resume-classification-bert python=3.9
+conda create -n resume-classification-bert python=3.10.13
 conda activate resume-classification-bert
 
 # Install dependencies

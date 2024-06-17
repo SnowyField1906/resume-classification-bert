@@ -118,28 +118,31 @@ class DistriBertClassify:
         test_predictions = self.bert_model.predict(validation_data)
         test_predictions = np.argmax(test_predictions, axis=1)
 
-        cm = confusion_matrix(self.df_test.y, test_predictions)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-        disp.plot()
-        plt.savefig("./model/assets/confusion_matrix.png")
+        # NOTE: Turn off when running server
+        # cm = confusion_matrix(self.df_test.y, test_predictions)
+        # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        # disp.plot()
+        # plt.savefig("./model/assets/confusion_matrix.png")
 
-        _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-        ax1.plot(t.history['loss'],'r',label='train loss')
-        ax1.plot(t.history['val_loss'],'b',label='test loss')
-        ax1.xlabel('No. of Epochs')
-        ax1.ylabel('Categorical Crossentropy Loss')
-        ax1.title('Loss Graph')
-        ax1.legend();
-        ax1.grid(True)
-        ax2.plot(t.history['balanced_accuracy'],'r',label='train accuracy')
-        ax2.plot(t.history['val_balanced_accuracy'],'b',label='test accuracy')
-        ax2.xlabel('Number of Epochs')
-        ax2.ylabel('Balanced Categorical Accuracy')
-        ax2.title('Accuracy Graph')
-        ax2.legend();
-        ax2.grid(True)
-        plt.tight_layout()
-        plt.savefig("./model/assets/loss_accuracy_graph.png")
+
+        # NOTE: Turn off when running server
+        # _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+        # ax1.plot(t.history['loss'],'r',label='train loss')
+        # ax1.plot(t.history['val_loss'],'b',label='test loss')
+        # ax1.set_xlabel('No. of Epochs')
+        # ax1.set_ylabel('Categorical Crossentropy Loss')
+        # ax1.set_title('Loss Graph')
+        # ax1.legend();
+        # ax1.grid(True)
+        # ax2.plot(t.history['balanced_accuracy'],'r',label='train accuracy')
+        # ax2.plot(t.history['val_balanced_accuracy'],'b',label='test accuracy')
+        # ax2.set_xlabel('No. of Epochs')
+        # ax2.set_ylabel('Balanced Categorical Accuracy')
+        # ax2.set_title('Accuracy Graph')
+        # ax2.legend();
+        # ax2.grid(True)
+        # plt.tight_layout()
+        # plt.savefig("./model/assets/loss_accuracy_graph.png")
 
         with open("./model/assets/classification_report.json", "w") as f:
             json.dump(classification_report(self.df_test.y, test_predictions), f)

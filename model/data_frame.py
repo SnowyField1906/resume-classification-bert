@@ -13,11 +13,12 @@ class DataFrame:
 
         data["resume_len"] = data.x.apply(len)
 
-        plt.rcParams['figure.figsize'] = (12,8)
-        sns.countplot(data.y)
-        plt.ylabel("labels")
-        plt.tight_layout()
-        plt.savefig("./model/assets/label_distribution.png")
+        # NOTE: Turn off when running server
+        # plt.rcParams['figure.figsize'] = (12,8)
+        # sns.countplot(data.y)
+        # plt.ylabel("labels")
+        # plt.tight_layout()
+        # plt.savefig("./model/assets/label_distribution.png")
 
         labels_dict = {}
         for idx, label in enumerate(data.y.unique()):
