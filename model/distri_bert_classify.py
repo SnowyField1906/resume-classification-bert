@@ -1,10 +1,14 @@
+import json
+
 import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 from keras.layers import Dense, Dropout, Input, Flatten, BatchNormalization
 from keras.models import load_model, Model
+from keras.utils import plot_model
 from transformers import TFDistilBertForSequenceClassification, AutoTokenizer
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 
 class DistriBertClassify:
@@ -24,7 +28,7 @@ class DistriBertClassify:
         self.tokenizer = AutoTokenizer.from_pretrained(name)
 
         if model_path:
-            self.bert_model = load_model(model_path)
+            self.bert_model = load_model(model_path, {"TFDistilBertForSequenceClassification": TFDistilBertForSequenceClassification})
         else:
             self.bert_model = TFDistilBertForSequenceClassification.from_pretrained(
                 name, from_pt=from_pt
@@ -33,7 +37,7 @@ class DistriBertClassify:
             input_ids = Input(shape=(self.max_length,), dtype=tf.int32, name=self.input_ids_key)
             attention_masks = Input(shape=(self.max_length,), dtype=tf.int32, name=self.attention_mask_key)
 
-            embeddings = self.bert_model(input_ids=input_ids, attention_mask=attention_masks)[0]
+            embeddings = self.bert_model(input_ids, attention_mask=attention_masks)[0]
 
             output = Flatten()(embeddings)
             output = Dense(units=1024, activation="relu")(output)
@@ -51,6 +55,8 @@ class DistriBertClassify:
 
             self.bert_model = Model(inputs=[input_ids, attention_masks], outputs=output)
             self.bert_model.layers[2].trainable = True
+
+            plot_model(self.bert_model, to_file="./model/assets/model.png", show_shapes=True)
 
     def update_data_frame(self, df_train, df_test):
         self.df_train = df_train
@@ -92,16 +98,15 @@ class DistriBertClassify:
             self.attention_mask_key: x_test[self.attention_mask_key],
         }
 
-        self.bert_model.fit(
+        t = self.bert_model.fit(
             x=train_data,
             y=self.df_train.y,
             validation_data=(validation_data, self.df_test.y),
             callbacks=callbacks,
-            epochs=500,
+            epochs=200,
             batch_size=32,
         )
-
-        self.bert_model.save("resume_parser.h5", save_format="tf")
+        self.bert_model.save("./model/assets/resume_parser.h5", save_format="tf")
 
         loss, acc = self.bert_model.evaluate(
             validation_data,
@@ -113,10 +118,31 @@ class DistriBertClassify:
         test_predictions = self.bert_model.predict(validation_data)
         test_predictions = np.argmax(test_predictions, axis=1)
 
-        print("Confusion Matrix:")
-        print(confusion_matrix(self.df_test.y, test_predictions))
-        print("Classification Report:")
-        print(classification_report(self.df_test.y, test_predictions))
+        cm = confusion_matrix(self.df_test.y, test_predictions)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        disp.plot()
+        plt.savefig("./model/assets/confusion_matrix.png")
+
+        _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+        ax1.plot(t.history['loss'],'r',label='train loss')
+        ax1.plot(t.history['val_loss'],'b',label='test loss')
+        ax1.xlabel('No. of Epochs')
+        ax1.ylabel('Categorical Crossentropy Loss')
+        ax1.title('Loss Graph')
+        ax1.legend();
+        ax1.grid(True)
+        ax2.plot(t.history['balanced_accuracy'],'r',label='train accuracy')
+        ax2.plot(t.history['val_balanced_accuracy'],'b',label='test accuracy')
+        ax2.xlabel('Number of Epochs')
+        ax2.ylabel('Balanced Categorical Accuracy')
+        ax2.title('Accuracy Graph')
+        ax2.legend();
+        ax2.grid(True)
+        plt.tight_layout()
+        plt.savefig("./model/assets/loss_accuracy_graph.png")
+
+        with open("./model/assets/classification_report.json", "w") as f:
+            json.dump(classification_report(self.df_test.y, test_predictions), f)
 
         return loss, acc
 

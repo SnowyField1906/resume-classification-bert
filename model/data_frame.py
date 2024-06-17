@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 from model.text_preprocessor import TextPreprocessor
 
@@ -11,6 +13,11 @@ class DataFrame:
 
         data["resume_len"] = data.x.apply(len)
 
+        plt.rcParams['figure.figsize'] = (12,8)
+        sns.countplot(data.y)
+        plt.tight_layout()
+        plt.savefig("./model/assets/label_distribution.png")
+
         labels_dict = {}
         for idx, label in enumerate(data.y.unique()):
             labels_dict[label] = idx
@@ -20,6 +27,7 @@ class DataFrame:
 
         self.data = data
         self.labels_dict = labels_dict
+
 
     def preprocess(self):
         text_preprocessor = TextPreprocessor()

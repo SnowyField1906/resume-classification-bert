@@ -14,7 +14,7 @@ input_ids_key = "input_ids"
 attention_mask_key = "attention_mask"
 
 def train() -> tuple[float, float]:
-    df = DataFrame("./model/dataset.csv", "Resume", "Category")
+    df = DataFrame("./model/assets/dataset.csv", "Resume", "Category")
     df.preprocess()
 
     df_train, df_test = train_test_split(
@@ -54,19 +54,19 @@ def train() -> tuple[float, float]:
     return loss, acc
 
 
-def load(content):
+def load(content=None):
     # from tika import parser
-    # content = str(parser.from_file("./resume.pdf")["content"])
+    # content = str(parser.from_file("./model/assets/resume.pdf")["content"])
     
     text_preprocessor = TextPreprocessor()
-    data_frame = DataFrame("./model/dataset.csv", "Resume", "Category")
+    data_frame = DataFrame("./model/assets/dataset.csv", "Resume", "Category")
 
     for func in text_preprocessor:
         content = func(content)
 
     model = DistriBertClassify(
         "manishiitg/distilbert-resume-parts-classify",
-        model_path="./model/resume_parser.h5",
+        model_path="./model/assets/resume_parser.h5",
         max_length=300,
         input_ids_key="input_ids",
         attention_mask_key="attention_mask",
