@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-from model.main import load, train
+from main import load, train
 
 app = Flask(__name__)
 
