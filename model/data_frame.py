@@ -15,6 +15,7 @@ class DataFrame:
 
         plt.rcParams['figure.figsize'] = (12,8)
         sns.countplot(data.y)
+        plt.ylabel("labels")
         plt.tight_layout()
         plt.savefig("./model/assets/label_distribution.png")
 
