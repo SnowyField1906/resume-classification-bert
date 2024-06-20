@@ -109,29 +109,7 @@ print(data.head())
 
 ```
 
-### Phân tích khám phá dữ liệu (EDA)
-
-```python
-df.shape()
-```
-
-→ (962, 2)
-
-```python
-df.info()
-```
-
-→
-
-![Untitled](Ba%CC%81o%20ca%CC%81o%20%C4%91o%CC%82%CC%80%20a%CC%81n%20Learning%20Statistic%20(%20Ho%CC%A3c%20tho%CC%82%CC%81%201b2488529fde42b286596a8ebf2e552b/Untitled.png)
-
-```python
-df.isna().sum()
-```
-
-→ Category    0
-     Resume      0  
-     dtype: int64
+### Phân tích khám phá dữ liệu (EDA):
 
 ```python
 sns.countplot(df.Category)
@@ -139,7 +117,8 @@ plt.xticks(rotation=90)
 plt.tight_layout();
 ```
 
-![Untitled](Ba%CC%81o%20ca%CC%81o%20%C4%91o%CC%82%CC%80%20a%CC%81n%20Learning%20Statistic%20(%20Ho%CC%A3c%20tho%CC%82%CC%81%201b2488529fde42b286596a8ebf2e552b/Untitled%201.png)
+![image](https://github.com/SnowyField1906/resume-classification-bert/assets/57946382/d8e32e41-6fc8-4797-96fe-5bc45b5bc716)
+
 
 ```python
 print("Total number of available jobs:", df.Category.nunique())
