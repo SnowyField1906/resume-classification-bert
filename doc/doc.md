@@ -4,21 +4,17 @@
 
 ### Mục lục
 
-I - Cấu trúc folder:
-
-II - Phần xử lý dữ liệu: 
+I - Phần xử lý dữ liệu: 
 
 1. Giới thiệu
 2. Bài toán Phân loại Văn bản
 3. Bài toán Phân tích CV
 
 II - Xây dựng ứng dụng: 
-
+### a - Cấu trúc folder
 ---
 
-## I - Cấu trúc folder:
-
-## II - Phần xử lý dữ liệu:
+## I - Phần xử lý dữ liệu:
 
 ### 1. Giới thiệu
 
