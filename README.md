@@ -47,6 +47,42 @@ python app.py
 python main.py "path/to/pdf/file"
 ```
 
+Example:
+
+```bash
+python main.py "./model/assets/resume.pdf"
+```
+
+```json
+{
+    'Data Science': '0.01',
+    'HR': '0.0',
+    'Advocate': '0.0',
+    'Arts': '0.0',
+    'Web Designing': '0.0',
+    'Mechanical Engineer': '0.0',
+    'Sales': '0.0',
+    'Health and fitness': '0.0',
+    'Civil Engineer': '0.0',
+    'Java Developer': '0.0',
+    'Business Analyst': '0.0',
+    'SAP Developer': '0.0',
+    'Automation Testing': '0.0',
+    'Electrical Engineering': '0.0',
+    'Operations Manager': '0.0',
+    'Python Developer': '0.0',
+    'DevOps Engineer': '0.04',
+    'Network Security Engineer': '0.0',
+    'PMO': '0.0',
+    'Database': '0.0',
+    'Hadoop': '0.0',
+    'ETL Developer': '0.0',
+    'DotNet Developer': '0.0',
+    'Blockchain': '99.96',
+    'Testing': '0.0'
+}
+```
+
 ### Linting and formatting
 
 ```bash
