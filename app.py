@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 
 from main import load, train
+from flask_cors import CORS 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/process', methods=['GET'])
 def process():
