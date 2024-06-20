@@ -139,8 +139,8 @@ class DistriBertClassify:
         # plt.tight_layout()
         # plt.savefig("./model/assets/loss_accuracy_graph.png")
 
-        with open("./model/assets/classification_report.json", "w") as f:
-            json.dump(classification_report(self.df_test.y, test_predictions), f)
+        # with open("./model/assets/classification_report.json", "w") as f:
+        #     json.dump(classification_report(self.df_test.y, test_predictions, output_dict=True), f)
 
         return loss, acc
 
