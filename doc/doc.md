@@ -11,7 +11,9 @@ I - Phần xử lý dữ liệu:
 3. Bài toán Phân tích CV
 
 II - Xây dựng ứng dụng: 
+
 a - Cấu trúc folder
+
 ---
 
 ## I - Phần xử lý dữ liệu:
