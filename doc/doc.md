@@ -284,7 +284,7 @@ class TextPreprocessor:
         )
 
 ```
-### **Tải xuống pre-trained tokenizer và DistilBert model:**
+### **Sử dụng lại pre-trained tokenizer và DistilBert model:**
 
 Chúng em sử dụng từ model có sẵn “manishiitg/distilbert-resume-parts-classify” ([https://huggingface.co/manishiitg/distilbert-resume-parts-classify](https://huggingface.co/manishiitg/distilbert-resume-parts-classify)) và tinh chỉnh lại từ model trên.
 
