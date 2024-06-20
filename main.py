@@ -55,8 +55,8 @@ def train() -> tuple[float, float]:
 
 
 def load(content=None):
-    from tika import parser
-    content = str(parser.from_file("./model/assets/resume.pdf")["content"])
+    # from tika import parser
+    # content = str(parser.from_file("./model/assets/resume.pdf")["content"])
     
     text_preprocessor = TextPreprocessor()
     data_frame = DataFrame("./model/assets/dataset.csv", "Resume", "Category")
@@ -72,7 +72,7 @@ def load(content=None):
         attention_mask_key="attention_mask",
     )
     res = model.predict([content])
-    # print(data_frame.labels(res[0]))
+    print(data_frame.labels(res[0]))
 
     return data_frame.labels(res[0])
 
