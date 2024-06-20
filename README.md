@@ -1,11 +1,11 @@
-# Usage
+## Fundamentals
 
-## Requirements
+### Requirements
 
 - `python` and `pip` are required to run the program.
 - `miniconda` is recommended to manage the environment.
 
-## Environment setting up
+### Environment setting up
 
 ```bash
 # Create new Conda environment
@@ -16,7 +16,19 @@ conda activate resume-classification-bert
 pip install -r requirements.txt
 ```
 
-## Start backend server
+### Train the model
+
+```bash
+python main.py
+```
+
+### Alternative approach: Download the model
+
+Download the model [from here](https://drive.google.com/file/d/1jAhFTdz5kzXt_suFReKjQKt_fCex9HX9/view) and put it in the `model/assets` folder.
+
+## Usage
+
+### Start backend server
 
 ```bash
 python app.py
@@ -27,29 +39,13 @@ python app.py
   - `POST /train` - `{loss: string, acc: string}`: Train the model.
   - `GET /process?content={string}` - `{[role: string]: string}`: Read content from PDF file and return the classification result.
 
-## Run code directly without activating backend server (for debugging purpose)
-
-Uncomment the following code in `main.py` and replace (or change the path of) the destination PDF file.
-
-```python
-def load(content=None):
-    # from tika import parser
-    # content = str(parser.from_file("./model/assets/resume.pdf")["content"])
-    
-    text_preprocessor = TextPreprocessor()
-    data_frame = DataFrame("./model/assets/dataset.csv", "Resume", "Category")
-```
+### Run code directly without activating backend server
 
 ```bash
-python main.py
+python main.py "path/to/pdf/file"
 ```
 
-- default port: 5000
-- api endpoint:
-  - `POST /train` - `{loss: string, acc: string}`: train the model
-  - `GET /process?content={string}` - `{[role: string]: string}`: read content from PDF file and return the classification result
-
-## Linting and formatting
+### Linting and formatting
 
 ```bash
 python -m black .

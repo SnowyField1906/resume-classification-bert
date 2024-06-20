@@ -10,8 +10,6 @@ from model.distri_bert_classify import DistriBertClassify
 from model.text_preprocessor import TextPreprocessor
 
 max_length = 300
-input_ids_key = "input_ids"
-attention_mask_key = "attention_mask"
 
 def train() -> tuple[float, float]:
     df = DataFrame("./model/assets/dataset.csv", "Resume", "Category")
@@ -25,8 +23,6 @@ def train() -> tuple[float, float]:
         "manishiitg/distilbert-resume-parts-classify",
         from_pt=True,
         max_length=max_length,
-        input_ids_key=input_ids_key,
-        attention_mask_key=attention_mask_key,
     )
     model.update_data_frame(
         df_train,
@@ -54,10 +50,11 @@ def train() -> tuple[float, float]:
     return loss, acc
 
 
-def load(content=None):
-    # from tika import parser
-    # content = str(parser.from_file("./model/assets/resume.pdf")["content"])
-    
+def load(content=None, path=None):
+    if content is None:
+        from tika import parser
+        content = str(parser.from_file(path)["content"])
+
     text_preprocessor = TextPreprocessor()
     data_frame = DataFrame("./model/assets/dataset.csv", "Resume", "Category")
 
@@ -68,8 +65,6 @@ def load(content=None):
         "manishiitg/distilbert-resume-parts-classify",
         model_path="./model/assets/resume_parser.h5",
         max_length=300,
-        input_ids_key="input_ids",
-        attention_mask_key="attention_mask",
     )
     res = model.predict([content])
     print(data_frame.labels(res[0]))
@@ -77,4 +72,9 @@ def load(content=None):
     return data_frame.labels(res[0])
 
 if __name__ == "__main__":
-    load()
+    import sys
+
+    if len(sys.argv) == 1:
+        train()
+    else:
+        load(path=sys.argv[1])

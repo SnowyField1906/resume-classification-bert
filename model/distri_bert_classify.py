@@ -18,13 +18,8 @@ class DistriBertClassify:
         from_pt=True,
         model_path=None,
         max_length=None,
-        input_ids_key=None,
-        attention_mask_key=None,
     ):
         self.max_length = max_length
-        self.input_ids_key = input_ids_key
-        self.attention_mask_key = attention_mask_key
-        
         self.tokenizer = AutoTokenizer.from_pretrained(name)
 
         if model_path:
@@ -34,8 +29,8 @@ class DistriBertClassify:
                 name, from_pt=from_pt
             )
 
-            input_ids = Input(shape=(self.max_length,), dtype=tf.int32, name=self.input_ids_key)
-            attention_masks = Input(shape=(self.max_length,), dtype=tf.int32, name=self.attention_mask_key)
+            input_ids = Input(shape=(self.max_length,), dtype=tf.int32, name="input_ids")
+            attention_masks = Input(shape=(self.max_length,), dtype=tf.int32, name="attention_mask")
 
             embeddings = self.bert_model(input_ids, attention_mask=attention_masks)[0]
 
@@ -90,12 +85,12 @@ class DistriBertClassify:
         )
 
         train_data = {
-            self.input_ids_key: x_train[self.input_ids_key],
-            self.attention_mask_key: x_train[self.attention_mask_key],
+            "input_ids": x_train["input_ids"],
+            "attention_mask": x_train["attention_mask"],
         }
         validation_data = {
-            self.input_ids_key: x_test[self.input_ids_key],
-            self.attention_mask_key: x_test[self.attention_mask_key],
+            "input_ids": x_test["input_ids"],
+            "attention_mask": x_test["attention_mask"],
         }
 
         t = self.bert_model.fit(
@@ -118,14 +113,14 @@ class DistriBertClassify:
         test_predictions = self.bert_model.predict(validation_data)
         test_predictions = np.argmax(test_predictions, axis=1)
 
-        # NOTE: Turn off when running server
+        # NOTE: Turn off when running on server
         # cm = confusion_matrix(self.df_test.y, test_predictions)
         # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
         # disp.plot()
         # plt.savefig("./model/assets/confusion_matrix.png")
 
 
-        # NOTE: Turn off when running server
+        # NOTE: Turn off when running on server
         # _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
         # ax1.plot(t.history['loss'],'r',label='train loss')
         # ax1.plot(t.history['val_loss'],'b',label='test loss')
@@ -163,8 +158,8 @@ class DistriBertClassify:
         )
 
         data = {
-            self.input_ids_key: x[self.input_ids_key],
-            self.attention_mask_key: x[self.attention_mask_key],
+            "input_ids": x["input_ids"],
+            "attention_mask": x["attention_mask"],
         }
 
         return self.bert_model.predict(data)

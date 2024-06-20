@@ -9,7 +9,7 @@ def process():
     content = request.args.get('content')
 
     if content:
-        res = load(content)
+        res = load(content=content)
         return jsonify(res), 201
     else:
         return jsonify({'success': False}), 400
