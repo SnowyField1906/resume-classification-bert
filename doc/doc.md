@@ -1,10 +1,12 @@
 # Báo cáo đồ án Learning Statistic ( Học thống kê)
 
-### Báo cáo Đồ án: Phân loại Văn bản và Phân tích CV
+## Đề tài: Phân loại Văn bản và Phân tích CV
 
 ### Mục lục
 
-[I - Phần xử lý dữ liệu:](#xulydulieu)
+[I - Thành viên nhóm:](#thanhvien)
+
+[II - Phần xử lý dữ liệu:](#xulydulieu)
 
 [1. Giới thiệu](#gioithieu)
 
@@ -12,13 +14,29 @@
 
 [3. Bài toán Phân tích CV](#baitoanphantichcv)
 
-[II - Xây dựng ứng dụng:](#xaydungungdung) 
+[III - Xây dựng ứng dụng:](#xaydungungdung) 
 
 [1. Cấu trúc folder](#cautrucfolder)
 
+[IV - Tham khảo:](#thamkhao)
+
+
 ---
 
-## I - Phần xử lý dữ liệu:
+## I- Thành viên nhóm:
+<a name="thanhvien"></a>
+
+
+xxxxxxxx - Nguyễn Hữu Thuận
+
+xxxxxxxx - Thạch Thông
+
+xxxxxxxx - Võ Gia Khang
+
+21120090 - Mai Trần Phú Khương 
+
+
+## II - Phần xử lý dữ liệu:
 <a name="xulydulieu"></a>
 
 
@@ -442,9 +460,13 @@ print(classification_report(test_df.Category,test_predictions))
 
 
 
-## II - Xây dựng ứng dụng dựa trên mô hình đã huấn luyện:
+## III - Xây dựng ứng dụng dựa trên mô hình đã huấn luyện:
 <a name="xaydungungdung"></a>
 
 ### a - Cấu trúc folder:
 <a name="cautrucfolder"></a>
+
+## IV - Tham khảo: 
+<a name="thamkhao"></a>
+
 
