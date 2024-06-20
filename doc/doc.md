@@ -116,7 +116,7 @@ GPT (Generative Pre-trained Transformer) và BERT (Bidirectional Encoder Represe
 ### **Chi tiết về code và các bước thực hiện**
 
 1. **Chuẩn bị dữ liệu:** Đọc và xử lý các tập dữ liệu đầu vào.
-2. Exploring Data Analysis (EDA)
+2. **Exploring Data Analysis (EDA)**
 3. **Tiền xử lý dữ liệu:**
 4. **Huấn luyện mô hình:** Sử dụng tập dữ liệu đã chuẩn bị để huấn luyện mô hình BERT.
 5. **Đánh giá mô hình:** Sử dụng các độ đo như độ chính xác, F1-score để đánh giá.
