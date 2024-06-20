@@ -11,13 +11,13 @@ numpy==1.26.1
 nltk==3.8.1
 
 # Training
-torchaudio==2.2.0        # MacOS M1/M2 only
-torchvision==0.17.0      # MacOS M1/M2 only
+torchaudio==2.2.0         # MacOS M1/M2 only
+torchvision==0.17.0       # MacOS M1/M2 only
 torch==2.2.0
 transformers==4.35.0
 tensorflow==2.14.0
-tensorflow-macos==2.14.0 # MacOS M1/M2 only
-tensorflow-metal==1.1.0  # MacOS M1/M2 only
+tensorflow-macos==2.14.0  # MacOS M1/M2 only
+tensorflow-metal==1.1.0   # MacOS M1/M2 only
 keras==2.14.0
 keras-rl==0.4.2
 keras-rl2==1.0.5
