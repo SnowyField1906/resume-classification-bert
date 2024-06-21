@@ -508,9 +508,13 @@ Do quá trình huấn luyện có thể tốn nhiều giờ nên, chúng em đã
 ## Chạy chương trình:
 ### Chạy frontend:
 
-
+```bash
+npm run dev
+```
+- Default port: 3000
+  
 ### Chạy backend server
-
+#### Cách 1: Chạy trực tiếp
 ```bash
 python app.py
 ```
@@ -520,7 +524,7 @@ python app.py
   - `POST /train` - `{loss: string, acc: string}`: Train the model.
   - `GET /process?content={string}` - `{[role: string]: string}`: Read content from PDF file and return the classification result.
 
-### Alternative approach: Chạy trực tiếp không qua backend
+### Cách 2: Chạy trực tiếp không qua backend
 
 ```bash
 python main.py "path/to/pdf/file"
