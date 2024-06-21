@@ -18,6 +18,8 @@
 
 [1. Cấu trúc folder](#cautrucfolder)
 
+[2. Setup môi trường và chạy chương trình](#setupandrun)
+
 [IV - Tham khảo:](#thamkhao)
 
 
@@ -115,46 +117,51 @@ GPT (Generative Pre-trained Transformer) và BERT (Bidirectional Encoder Represe
 
 ### **Chi tiết về code và các bước thực hiện**
 
-1. **Chuẩn bị dữ liệu:** Đọc và xử lý các tập dữ liệu đầu vào.
-2. **Exploring Data Analysis (EDA)**
-3. **Tiền xử lý dữ liệu:**
+1. **Chuẩn bị dữ liệu và Tiền xử lí dữ liệu:** Đọc và xử lý các tập dữ liệu đầu vào.
 4. **Huấn luyện mô hình:** Sử dụng tập dữ liệu đã chuẩn bị để huấn luyện mô hình BERT.
 5. **Đánh giá mô hình:** Sử dụng các độ đo như độ chính xác, F1-score để đánh giá.
-6. **Xây dựng ứng dụng:** Triển khai mô hình vào một ứng dụng web để thực hiện phân loại văn bản và phân tích CV tự động.
 
-### Chuẩn bị dữ liệu ( Data preparation )
+### 1. Chuẩn bị dữ liệu và tiền xử lí dữ liệu ( Data preparation & Preprocessing )
+### Lớp DataFrame:
+Cung cấp các phương thức để đổi tên cột, tính toán thêm thông tin cho dữ liệu, tiền xử lý văn bản và chuyển đổi nhãn
 
-```python
-import pandas as pd
-
-# Đọc dữ liệu từ file CSV
-data = pd.read_csv('data.csv')
-
-# Xem xét một số dòng trong dữ liệu
-print(data.head())
-
-```
-
-### Phân tích khám phá dữ liệu (EDA):
+- Hàm '__prepocess__': thực hiện tiền xử lý dữ liệu thông qua lớp TextProccessor
+- Hàm '__labels__': truy xuất thông tin của các labels sau khi train.
 
 ```python
-sns.countplot(df.Category)
-plt.xticks(rotation=90)
-plt.tight_layout();
+class DataFrame:
+    def __init__(self, path: str, x_col: str, y_col: str):
+        ...
+
+    def preprocess(self):
+        ...
+
+    def labels(self, output: list[int]) -> dict[str, str]:        
+        ...
+
+        return labels
 ```
 
-![image](https://github.com/SnowyField1906/resume-classification-bert/assets/57946382/d8e32e41-6fc8-4797-96fe-5bc45b5bc716)
+- Hàm khởi tạo '__init__': thực hiện các thao tác xử lí nhãn từ dữ liệu, gán nhãn cho các công việc có sẵn
 
-### Gắn nhãn với các công việc có sẵn
+``` python
+      data = pd.read_csv(path)
+        data.rename(columns={x_col: "x", y_col: "y"}, inplace=True)
 
-```jsx
-labels_dict = {}
+        data["resume_len"] = data.x.apply(len
 
-for idx, label in enumerate(df.Category.unique()):
-    labels_dict[label] = idx
+        labels_dict = {}
+        for idx, label in enumerate(data.y.unique()):
+            labels_dict[label] = idx
 
-labels_dict
+        data.y = data.y.apply(func=lambda x: labels_dict[x])
+        data.y = data.y.astype(np.int64)
+
+        self.data = data
+        self.labels_dict = labels_dict
 ```
+
+### Gắn nhãn cho các công việc có sẵn:
 
 → {'Data Science': 0,
 'HR': 1,
@@ -182,12 +189,24 @@ labels_dict
 'Blockchain': 23,
 'Testing': 24}
 
+
+### Biểu đồ phân phối nhãn:
+
+```python
+sns.countplot(df.Category)
+plt.xticks(rotation=90)
+plt.tight_layout();
+```
+
+![image](https://github.com/SnowyField1906/resume-classification-bert/assets/57946382/d8e32e41-6fc8-4797-96fe-5bc45b5bc716)
+
 ```jsx
 df.Category = df.Category.apply(func=lambda x: labels_dict[x])
 df.Category = df.Category.astype(np.int64)
 ```
 
 ### Tiền xử lý dữ liệu ( Data preprocessing ):
+### Lớp TextPreproccessor:
 
 Lớp `TextPreprocessor` được thiết kế để tiền xử lý dữ liệu văn bản trong một cột của dataframe. Các bước tiền xử lý bao gồm loại bỏ HTML tags, loại bỏ stop words, các con số, các liên kết, các ký tự đặc biệt, dấu câu, ký tự không phải ASCII, địa chỉ email và chuyển đổi văn bản thành chữ thường. Mỗi bước này nhằm chuẩn hóa và làm sạch dữ liệu để thuận tiện cho các công đoạn xử lý và phân tích văn bản tiếp theo.
 
@@ -195,96 +214,51 @@ Lớp `TextPreprocessor` được thiết kế để tiền xử lý dữ liệu
 class TextPreprocessor:
     def __init__(self):
         self.cached_stop_words = set(stopwords.words("english"))
-        self.cached_stop_words.update(
-            (
-                "and",
-                "I",
-                "A",
-                "http",
-                "And",
-                "So",
-                "arnt",
-                "This",
-                "When",
-                "It",
-                "many",
-                "Many",
-                "so",
-                "cant",
-                "Yes",
-                "yes",
-                "No",
-                "no",
-                "These",
-                "these",
-                "mailto",
-                "regards",
-                "ayanna",
-                "like",
-                "email",
-            )
-        )
+        self.cached_stop_words.update(("and","I","A","http","And","So","arnt","This","When","It","many",
+        "Many","so","cant","Yes","yes","No","no","These","these","mailto","regards","ayanna","like","email",))
 
     def remove_stop_words(self, str):
-        return " ".join(
-            [word for word in str.split() if word not in self.cached_stop_words]
-        )
+        ...
 
     def punct(self, text):
-        token = RegexpTokenizer(r"\w+")
-        text = token.tokenize(text)
-        return " ".join(text)
+        ...
 
     def clean_html(self, text):
-        html = re.compile("<.*?>")
-        return html.sub(r"", text)
+        ...
 
     def remove_links(self, link):
-        """Takes a string and removes web links from it"""
-        link = re.sub(r"http\S+", "", link)
-        link = re.sub(r"bit.ly/\S+", "", link)
-        return link.strip("[link]")
+        ...
 
     def remove_special_characters(self, text):
-        pat = r"[^a-zA-z0-9.,!?/:;\"\'\s]"
-        return re.sub(pat, "", text)
+        ...
 
     def remove_(self, link):
-        link = re.sub("([_]+)", "", link)
-        return link
+        ...
 
     def remove_digits(self, text):
-        pattern = r"[^a-zA-z.,!?/:;\"\'\s]"
-        return re.sub(pattern, "", text)
+        ...
 
     def lower(self, text):
-        return text.lower()
+        ...
 
     def email_address(self, text):
-        email = re.compile(r"[\w\.-]+@[\w\.-]+")
-        return email.sub(r"", text)
+        ...
 
     def non_ascii(self, s):
-        return "".join(i for i in s if ord(i) < 128)
+        ...
 
     def __iter__(self):
-        return iter(
-            [
-                self.remove_stop_words,
-                self.punct,
-                self.clean_html,
-                self.remove_links,
-                self.remove_special_characters,
-                self.remove_,
-                self.remove_digits,
-                self.lower,
-                self.email_address,
-                self.non_ascii,
-            ]
-        )
+        ...
 
 ```
+
+### 3. Huấn luyện mô hình:
 ### **Sử dụng lại pre-trained tokenizer và DistilBert model:**
+
+Mô hình DistilBERT: sử dụng kỹ thuật chắt lọc (distillation) bằng cách sử dụng thuật toán xấp xỉ trong
+thống kê Bayes là Kulback Leiber để xấp xỉ các kiến trúc mô hình mạng nơ-ron lớn bằng các các mạng có
+kiến trúc nhỏ hơn. DistilBERT có kiến trúc giảm đi so với BERT 40%. Mô hình DistilBERT được đề xuất
+để tăng tốc độ tính toán mà vẫn giữ được độ chính xác và hiệu quả của mô hình
 
 Chúng em sử dụng từ model có sẵn “manishiitg/distilbert-resume-parts-classify” ([https://huggingface.co/manishiitg/distilbert-resume-parts-classify](https://huggingface.co/manishiitg/distilbert-resume-parts-classify)) và tinh chỉnh lại từ model trên.
 
@@ -385,7 +359,7 @@ loss, acc = model.train(
         ]
     )
 ```
-
+### 3. Đánh giá hiểu xuất mô hình:
 ### Minh họa hiệu xuất mô hình:
 
 ```jsx
@@ -420,7 +394,9 @@ print("Test Balanced Categorical Accuracy:", acc)
 ```
 
 10/10 [==============================] - 2s 190ms/step - loss: 0.1330 - balanced_accuracy: 0.9931
+
 Test Sparse Categorical Crossentropy Loss: 0.13300560414791107
+
 Test Balanced Categorical Accuracy: 0.9930796027183533
 
 ```jsx
@@ -447,6 +423,9 @@ array([ 3, 14,  0,  0, 19, 10, 24, 21, 19, 15, 18, 13, 24, 24, 14,  7,  3,
 9,  9, 14,  5, 12,  3, 24,  0, 23, 16,  7, 12, 15,  7, 11,  4, 20,
 22, 19,  7,  4, 24,  3,  6,  4, 21, 16,  8,  9, 15, 15, 19, 18,  2])
 
+
+
+### Confusion Matrix & Classification Report:
 ```jsx
 test_predictions
 print("Confusion Matrix:")
@@ -455,7 +434,7 @@ print("Classification Report:")
 print(classification_report(test_df.Category,test_predictions))
 ```
 
-### Confusion Matrix:
+Confusion Matrix: 
 ![image](https://github.com/SnowyField1906/resume-classification-bert/assets/57946382/b6f76870-b947-4090-8d14-3c1e710b36a7)
 
 
@@ -463,10 +442,130 @@ print(classification_report(test_df.Category,test_predictions))
 ## III - Xây dựng ứng dụng dựa trên mô hình đã huấn luyện:
 <a name="xaydungungdung"></a>
 
-### a - Cấu trúc folder:
+### 1 - Cấu trúc folder:
 <a name="cautrucfolder"></a>
+```jsx
+- resume-classification-bert/
+  - doc/
+    - doc.md
+  - model/
+    - assets/  
+    - data_frame.py
+    - distri_bert_classify.py
+    - text_preprocessor.py
+  ...
+  - app.py
+  - main.py
+  - README.md
+  ```
+__doc.md__ : Báo cáo đồ án
+
+__assets/__ : Thư mục chứa dữ liệu training và data visualization
+
+__model/__ : Thư mục src code của mô hình 
+
+__data_frame.py__ : file code chuẩn bị, xử lí dữ liệu, chứa các phương thức để tính toán thêm thông tin cho dữ liệu, tiền xử lý văn bản và chuyển đổi nhãn, cùng với việc xây dựng một giao diện để truy xuất thông tin về nhãn sau khi huấn luyện
+    
+__distri_bert_classify.py__: file code của mô hình distribert
+    
+__text_preprocessor.py__: file code tiền xử lí dữ liệu
+
+__app.py__: Thông tin API
+
+__main.py__: Chương trình chính
+    
+### 2 - Setup môi trường và chạy chương trình:
+<a name="setupandrun"></a>
+
+### Yêu cầu:
+
+- Cài đặt sẵn môi trường `python` và `pip` 
+- Cài đặt `miniconda` để quản lí môi trường ( recommended )
+
+### Setup môi trường
+
+```bash
+# Tạo môi trường conda mới
+conda create -n resume-classification-bert python=3.10.13
+conda activate resume-classification-bert
+
+# Cài đặt dependencies
+pip install -r requirements.txt
+```
+
+### Huấn luyện mô hình
+#### Cách 1: Huấn luyện trực tiếp
+
+```bash
+python main.py
+```
+
+#### Cách 2: Download mô hình đã được huấn luyện sẵn:
+Do quá trình huấn luyện có thể tốn nhiều giờ nên, chúng em đã chuẩn bị sẵn dữ liệu đã được train, thầy cô có thể tải xuống và sử dụng ngay ( Lưu ý đặt file đã tải xuống ở /model/assets )
+
+[drive.google.com/file/d/1r93iNQdgTqOlgDOm37oNESkX9PoXr_Ln](https://drive.google.com/file/d/1r93iNQdgTqOlgDOm37oNESkX9PoXr_Ln) 
+
+## Chạy chương trình:
+### Chạy frontend:
+
+
+### Chạy backend server
+
+```bash
+python app.py
+```
+
+- Default port: 5000
+- API endpoint:
+  - `POST /train` - `{loss: string, acc: string}`: Train the model.
+  - `GET /process?content={string}` - `{[role: string]: string}`: Read content from PDF file and return the classification result.
+
+### Alternative approach: Chạy trực tiếp không qua backend
+
+```bash
+python main.py "path/to/pdf/file"
+```
+
+Example:
+
+```bash
+python main.py "./model/assets/resume.pdf"
+```
+
+```json
+{
+    "Data Science": 0.01,
+    "HR": 0.0,
+    "Advocate": 0.0,
+    "Arts": 0.0,
+    "Web Designing": 0.0,
+    "Mechanical Engineer": 0.0,
+    "Sales": 0.0,
+    "Health and fitness": 0.0,
+    "Civil Engineer": 0.0,
+    "Java Developer": 0.0,
+    "Business Analyst": 0.0,
+    "SAP Developer": 0.0,
+    "Automation Testing": 0.0,
+    "Electrical Engineering": 0.0,
+    "Operations Manager": 0.0,
+    "Python Developer": 0.0,
+    "DevOps Engineer": 0.04,
+    "Network Security Engineer": 0.0,
+    "PMO": 0.0,
+    "Database": 0.0,
+    "Hadoop": 0.0,
+    "ETL Developer": 0.0,
+    "DotNet Developer": 0.0,
+    "Blockchain": 99.96,
+    "Testing": 0.0
+}
+```
 
 ## IV - Tham khảo: 
 <a name="thamkhao"></a>
+1. [github.com/huggingface/transformers](https://github.com/huggingface/transformers)
+
+  
 
 
